@@ -35,3 +35,9 @@ is_shown_class = "visible";
 template_function = default_template_function;
 background_template_function = default_background_template_function;
 ```
+
+## Install
+
+```
+bower install overlay-js
+```
