@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.1.0
+    v0.1.1
 
 */
 
@@ -44,6 +44,7 @@ Overlay.prototype.settings = {
 
   is_shown_class: "visible",
 
+  render_templates_for_predefined_elements: true,
   template_function: default_template_function,
   background_template_function: default_background_template_function
 };
@@ -88,6 +89,10 @@ Overlay.prototype.create_new_or_use_element = function(element) {
     element = document.createElement("div");
     element.className = this.settings.class_name;
     element.innerHTML = this.settings.template_function();
+
+  } else if (this.settings.render_templates_for_predefined_elements) {
+    element.innerHTML = this.settings.template_function();
+
   }
 
   this.el = element;
@@ -98,8 +103,14 @@ Overlay.prototype.create_new_or_use_element = function(element) {
     background = document.createElement("div");
     background.className = this.settings.background_class_name;
     background.innerHTML = this.settings.background_template_function();
+
   } else {
     background = this.$el.siblings("." + this.settings.background_class_name).get(0);
+
+    if (this.settings.render_templates_for_predefined_elements) {
+      background.innerHTML = this.settings.background_template_function();
+    }
+
   }
 
   this.bg = background;

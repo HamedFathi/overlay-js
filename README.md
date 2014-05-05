@@ -30,6 +30,7 @@ background_class_name = "mod-overlay-background";
 content_class_name = "overlay-content";
 
 is_shown_class = "visible";
+render_templates_for_predefined_elements = true;
 
 // functions that return html
 template_function = default_template_function;
