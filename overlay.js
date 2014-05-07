@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.1.1
+    v0.1.2
 
 */
 
@@ -239,7 +239,9 @@ Overlay.prototype.clear_content = function() {
 Overlay.prototype.destroy = function() {
   this.unbind_events();
   this.$el.remove();
+  this.$bg.remove();
   this.el = null;
+  this.bg = null;
 };
 
 

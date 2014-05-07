@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+- Also remove the background element when the
+  destroy function is executed
+
+
 ## 0.1.1
 
 - Also render templates for predefined elements  
