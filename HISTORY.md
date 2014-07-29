@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+
+- README fix
+
+
 ## 0.1.3
 
 - Better explanation of how to use the plugin
