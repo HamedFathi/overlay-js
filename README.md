@@ -30,7 +30,7 @@ instance.append_content(content);
 instance.hide();
 
 // running a callback after the overlay is shown (same for hide)
-$(window).on("overlay.open.CONTENT_KEY", callback);
+$(window).on("overlay.show.CONTENT_KEY", callback);
 
 // extra's
 // 1. A keydown event is bound to the ESC button when creating a new overlay instance
