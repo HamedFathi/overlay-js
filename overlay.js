@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.1.2
+    v0.1.3
 
 */
 
@@ -181,7 +181,7 @@ Overlay.prototype.show = function(content_key) {
 Overlay.prototype.show_callback = function() {
   this.$el.off(this.state.transition_key, this.show_callback);
 
-  $(window).trigger("overlay.open." + this.state.content_key);
+  $(window).trigger("overlay.show" + (this.state.content_key ? "." + this.state.content_key : ""));
 };
 
 
@@ -213,7 +213,7 @@ Overlay.prototype.hide_callback = function() {
   this.$el.add(this.$bg).css("display", "none");
   this.clear_content();
 
-  $(window).trigger("overlay.hide");
+  $(window).trigger("overlay.hide" + (this.state.content_key ? "." + this.state.content_key : ""));
 };
 
 
