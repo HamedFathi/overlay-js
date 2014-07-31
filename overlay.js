@@ -163,7 +163,7 @@ Overlay.prototype.show = function(content_key) {
     that.$el.add(that.$bg)
       .addClass(that.settings.is_shown_class)
       .addClass(content_key);
-  }, 25);
+  }, 200);
 
   // state
   this.state.is_shown = true;
