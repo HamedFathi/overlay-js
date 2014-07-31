@@ -17,6 +17,7 @@ var default_template_function = function() {
   return [
     '<div class="overlay-outer-wrapper">',
       '<div class="overlay-inner-wrapper">',
+        '<div class="overlay-close-layer close"></div>',
         '<div class="overlay-content">',
           '<div class="overlay-header">',
             '<a href="#" class="close"></a>',
