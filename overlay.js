@@ -43,6 +43,10 @@ Overlay.prototype.settings = {
   content_class_name: "overlay-content",
 
   is_shown_class: "visible",
+  default_content_key: "default",
+  show_hide_callback_wait_duration: 750,
+  // e.g. 0 = execute immediately after the 'show' function is called
+  // does not apply to browsers that don't support transitions
 
   render_templates_for_predefined_elements: true,
   template_function: default_template_function,
@@ -151,7 +155,7 @@ Overlay.prototype.show = function(content_key) {
   var that = this;
 
   // content key
-  content_key = content_key || "default";
+  content_key = content_key || this.settings.default_content_key;
 
   // show
   setTimeout(function() {
@@ -171,7 +175,7 @@ Overlay.prototype.show = function(content_key) {
 
   // callback
   if (this.state.transition_key) {
-    this.$el.on(this.state.transition_key, this.show_callback);
+    setTimeout(this.show_callback, this.settings.show_hide_callback_wait_duration);
   } else {
     this.show_callback();
   }
@@ -179,9 +183,9 @@ Overlay.prototype.show = function(content_key) {
 
 
 Overlay.prototype.show_callback = function() {
-  this.$el.off(this.state.transition_key, this.show_callback);
-
-  $(window).trigger("overlay.show" + (this.state.content_key ? "." + this.state.content_key : ""));
+  $(window).trigger("overlay.show" + (
+    this.state.content_key ? "." + this.state.content_key : ""
+  ));
 };
 
 
@@ -190,30 +194,40 @@ Overlay.prototype.show_callback = function() {
 //  Hide + callback
 //
 Overlay.prototype.hide = function() {
+  this.state.content_key = null;
+  this.state.is_shown = false;
+
+  // pre-hide callback
+  this.pre_hide_callback();
+
+  // hide
   this.$el.add(this.$bg)
     .removeClass(this.settings.is_shown_class)
     .removeClass(this.state.content_key);
 
-  // state
-  this.state.content_key = false;
-  this.state.is_shown = false;
-
   // callback
   if (this.state.transition_key) {
-    this.$el.on(this.state.transition_key, this.hide_callback);
+    setTimeout(this.hide_callback, this.settings.show_hide_callback_wait_duration);
   } else {
-    this.hide_callback();
+    this.show_callback();
   }
 };
 
 
-Overlay.prototype.hide_callback = function() {
-  this.$el.off(this.state.transition_key, this.hide_callback);
+Overlay.prototype.pre_hide_callback = function() {
+  $(window).trigger("overlay.pre_hide" + (
+    this.state.content_key ? "." + this.state.content_key : ""
+  ));
+};
 
+
+Overlay.prototype.hide_callback = function() {
   this.$el.add(this.$bg).css("display", "none");
   this.clear_content();
 
-  $(window).trigger("overlay.hide" + (this.state.content_key ? "." + this.state.content_key : ""));
+  $(window).trigger("overlay.hide" + (
+    this.state.content_key ? "." + this.state.content_key : ""
+  ));
 };
 
 
