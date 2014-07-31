@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.1.5
+    v0.2.0
 
 */
 
@@ -168,7 +168,7 @@ Overlay.prototype.show = function(content_key) {
     that.$el.add(that.$bg)
       .addClass(that.settings.is_shown_class)
       .addClass(content_key);
-  }, 200);
+  }, 25);
 
   // state
   this.state.is_shown = true;

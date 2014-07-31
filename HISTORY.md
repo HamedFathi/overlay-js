@@ -1,10 +1,19 @@
 # Changelog
 
+## 0.2.0
+
+- Removed the use of transitionend and used setTimeout instead.
+- Added a setting to adjust the setTimeout duration
+- Improved the content_key usage
+- Added a setting to set the default content key
+- Added a pre-hide callback
+
+
 ## 0.1.5
 
 - Show callback isn't always triggered, transitionend listener is troublesome. Hotfixed by setting timeout to 200ms
-
 - Added background close by default
+
 
 ## 0.1.4
 

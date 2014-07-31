@@ -29,7 +29,7 @@ instance.append_content(content);
 // hiding the overlay
 instance.hide();
 
-// running a callback after the overlay is shown (same for hide)
+// running a callback after the overlay is shown (same for hide and pre_hide)
 $(window).on("overlay.show.CONTENT_KEY", callback);
 
 // extra's
@@ -48,6 +48,8 @@ background_class_name = "mod-overlay-background";
 content_class_name = "overlay-content";
 
 is_shown_class = "visible";
+default_content_key = "default";
+show_hide_callback_wait_duration = 750;
 render_templates_for_predefined_elements = true;
 
 // functions that return html
