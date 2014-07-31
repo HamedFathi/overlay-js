@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.1.4
+    v0.1.5
 
 */
 
@@ -17,6 +17,7 @@ var default_template_function = function() {
   return [
     '<div class="overlay-outer-wrapper">',
       '<div class="overlay-inner-wrapper">',
+        '<div class="overlay-close-layer close"></div>',
         '<div class="overlay-content">',
           '<div class="overlay-header">',
             '<a href="#" class="close"></a>',
@@ -167,7 +168,7 @@ Overlay.prototype.show = function(content_key) {
     that.$el.add(that.$bg)
       .addClass(that.settings.is_shown_class)
       .addClass(content_key);
-  }, 25);
+  }, 200);
 
   // state
   this.state.is_shown = true;

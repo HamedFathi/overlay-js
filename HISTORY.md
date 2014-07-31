@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+- Show callback isn't always triggered, transitionend listener is troublesome. Hotfixed by setting timeout to 200ms
+
+- Added background close by default
+
 ## 0.1.4
 
 - README fix
@@ -20,9 +26,9 @@
 
 ## 0.1.1
 
-- Also render templates for predefined elements  
+- Also render templates for predefined elements
   -> And add option to disable that
-  
+
 
 ## 0.1.0
 

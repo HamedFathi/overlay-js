@@ -57,10 +57,21 @@
   vertical-align: middle;
 }
 
+.mod-overlay .overlay-close-layer {
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 0;
+}
+
 .mod-overlay .overlay-content {
   background-color: white;
   margin: 0 auto;
   position: relative;
+  z-index: 1;
 }
 
 .mod-overlay .overlay-header {
