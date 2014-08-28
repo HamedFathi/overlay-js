@@ -210,7 +210,7 @@ Overlay.prototype.hide = function() {
   if (this.state.transition_key) {
     setTimeout(this.hide_callback, this.settings.show_hide_callback_wait_duration);
   } else {
-    this.show_callback();
+    this.hide_callback();
   }
 };
 
