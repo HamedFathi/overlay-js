@@ -5,7 +5,7 @@ $(function() {
   // trigger
   $(".trigger").on("click", function(e) {
     overlay.append_content(sample_content);
-    overlay.show();
+    overlay.show("example-content-key");
   });
 
   // events

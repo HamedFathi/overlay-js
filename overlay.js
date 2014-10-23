@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.2.1
+    v0.2.2
 
 */
 
@@ -195,7 +195,6 @@ Overlay.prototype.show_callback = function() {
 //  Hide + callback
 //
 Overlay.prototype.hide = function() {
-  this.state.content_key = null;
   this.state.is_shown = false;
 
   // pre-hide callback
@@ -205,6 +204,9 @@ Overlay.prototype.hide = function() {
   this.$el.add(this.$bg)
     .removeClass(this.settings.is_shown_class)
     .removeClass(this.state.content_key);
+
+  // reset content key
+  this.state.content_key = null;
 
   // callback
   if (this.state.transition_key) {
