@@ -205,9 +205,6 @@ Overlay.prototype.hide = function() {
     .removeClass(this.settings.is_shown_class)
     .removeClass(this.state.content_key);
 
-  // reset content key
-  this.state.content_key = null;
-
   // callback
   if (this.state.transition_key) {
     setTimeout(this.hide_callback, this.settings.show_hide_callback_wait_duration);
@@ -244,6 +241,7 @@ Overlay.prototype.append_content = function(x) {
 
 
 Overlay.prototype.clear_content = function() {
+  this.state.content_key = null;
   this.el.innerHTML = this.settings.template_function();
   this.cache_other_elements();
 };
