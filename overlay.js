@@ -201,9 +201,7 @@ Overlay.prototype.hide = function() {
   this.pre_hide_callback();
 
   // hide
-  this.$el.add(this.$bg)
-    .removeClass(this.settings.is_shown_class)
-    .removeClass(this.state.content_key);
+  this.$el.add(this.$bg).removeClass(this.settings.is_shown_class);
 
   // callback
   if (this.state.transition_key) {
@@ -222,7 +220,7 @@ Overlay.prototype.pre_hide_callback = function() {
 
 
 Overlay.prototype.hide_callback = function() {
-  this.$el.add(this.$bg).css("display", "none");
+  this.$el.add(this.$bg).css("display", "none").removeClass(this.state.content_key);
   this.clear_content();
 
   $(window).trigger("overlay.hide" + (
