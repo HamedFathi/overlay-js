@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Fix hide_callback, clear_content was executed too early
+
+
 ## 0.2.2
 
 - Fix content_key reset in the hide function (was executed too early)

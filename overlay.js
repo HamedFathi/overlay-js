@@ -1,7 +1,7 @@
 /*
 
     OVERLAY JS
-    v0.2.2
+    v0.2.3
 
 */
 
@@ -221,11 +221,12 @@ Overlay.prototype.pre_hide_callback = function() {
 
 Overlay.prototype.hide_callback = function() {
   this.$el.add(this.$bg).css("display", "none").removeClass(this.state.content_key);
-  this.clear_content();
 
   $(window).trigger("overlay.hide" + (
     this.state.content_key ? "." + this.state.content_key : ""
   ));
+
+  this.clear_content();
 };
 
 
