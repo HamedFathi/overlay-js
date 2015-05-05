@@ -64,7 +64,7 @@ body {
   height: 50px;
   left: 50%;
   line-height: 52px;
-  margin: -25px 0 0 -25px;
+  margin: -25px 0 0 -75px;
   position: absolute;
   text-align: center;
   top: 50%;
@@ -75,4 +75,28 @@ body {
 
 .trigger:hover {
   background-color: #17C0EA;
+}
+
+.ajax-trigger {
+  background-color: #e13c3c;
+  border-radius: 50%;
+  color: #f7b6b6;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  height: 50px;
+  left: 50%;
+  line-height: 51px;
+  margin: -25px 0 0 25px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 50px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 350ms;
+}
+
+.ajax-trigger:hover {
+  background-color: #ef7938;
 }
