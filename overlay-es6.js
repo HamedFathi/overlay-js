@@ -1,32 +1,26 @@
 class Overlay {
 
-  constructor() {
-    this.overlayEl    = null;
-    this.template     = defaultTemplate();
-    this.transitionDuration = 750;
+  constructor (el = document.getElementsByClassName('js-overlay')[0], options = {}) {
+    this.el = el;
 
-    this.append().bind().init();
+    // @todo - Merge with options
+    this.options = {
+      selectors: {
+        close: '.js-overlay-close',
+        content: '.js-overlay-content',
+        show: '.js-overlay-show',
+        toggle: '.js-overlay-toggle'
+      },
+      states: {
+        hidden: 'is-hidden',
+        shown: 'is-shown'
+      }
+    };
+
+    this.init().bind();
   }
 
-  /**
-   * Append element if not already in DOM
-   *
-   * @return {Overlay}
-   */
-  append() {
-    let overlayEl = document.querySelector('.mod-overlay');
-
-    // Overlay
-    if ( !overlayEl ) {
-      overlayEl           = document.createElement('div');
-      overlayEl.className = 'mod-overlay';
-      overlayEl.innerHTML = this.template;
-
-      document.body.appendChild( overlayEl );
-    }
-
-    this.overlayEl = overlayEl;
-
+  init () {
     return this;
   }
 
@@ -35,75 +29,61 @@ class Overlay {
    *
    * @return {Overlay}
    */
-  bind() {
-    document.body.addEventListener('click', (e) => { this.onClickClose(e) });
+  bind () {
+    this.bindDelegate('click', this.options.selectors.show, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.show();
+    });
+
+    this.bindDelegate('click', this.options.selectors.hide, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.hide();
+    });
+
+    this.bindDelegate('click', this.options.selectors.toggle, e => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.toggle();
+    });
 
     return this;
   }
 
-  /**
-   * Close overlay by adding CSS classes
-   */
-  close() {
-    this.overlayEl.classList.remove('is-open');
+  bindDelegate (evt, selector, handler) {
+    let matches = document.body.matches || document.body.webkitMatchesSelector || document.body.msMatchesSelector;
 
-    setTimeout( () => {
-      this.overlayEl.style.display = 'none';
-
-    }, this.transitionDuration);
+    document.body.addEventListener(evt, e => {
+      if (!!matches.call(e.target, `${selector}, ${selector} *`)) {
+        handler(e);
+      }
+    }, false);
   }
 
-  /**
-   * Initialize overlay instance
-   *
-   * @return {Overlay}
-   */
-  init() {
-    return this;
+  show () {
+    let regex = new RegExp("\\s*" + this.options.states.hidden + "\\s*", 'gi'); // Template string not working because of reasons
+    console.log('[Overlay] Show');
+    this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.shown;
   }
 
-  /**
-   * On click close handler
-   *
-   * @param  {Event} e
-   */
-  onClickClose(e) {
-    console.log(this);
-    if ( e.target && e.target.classList.contains('js-overlay-close') ) {
-      this.close();
+  hide () {
+    let regex = new RegExp("\\s*" + this.options.states.shown + "\\s*", 'gi'); // Template string not working because of reasons
+    console.log('[Overlay] Hide');
+    this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
+  }
+
+  toggle () {
+    if (this.el.className.indexOf(this.options.states.shown) === -1) {
+      this.show();
+    } else {
+      this.hide();
     }
   }
 
-  /**
-   * Open overlay by adding CSS classes
-   */
-  open() {
-    this.overlayEl.style.display    = 'block';
-
-    setTimeout( () => {
-      this.overlayEl.classList.add('is-open');
-
-    }, 25);
+  render (html) {
+    this.el.querySelector(this.options.selectors.content).innerHTML = html;
   }
-
-}
-
-/**
- * Default template HTML
- *
- * @return {String}
- */
-function defaultTemplate() {
-  return `<div class="overlay__outer-wrapper">
-            <div class="overlay__inner-wrapper">
-              <div class="overlay__background js-overlay-close"></div>
-              <div class="overlay__content">
-                <a href="#" class="js-overlay-close">x</a>
-
-                Hello world
-              </div>
-            </div>
-          </div>`;
 }
 
 export default Overlay;

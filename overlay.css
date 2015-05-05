@@ -1,4 +1,5 @@
 .mod-overlay {
+  background-color: rgba(0, 0, 0, .45);
   bottom: 0;
   display: none;
   left: 0;
@@ -19,49 +20,19 @@
   transition: opacity 750ms;
 }
 
-.mod-overlay.is-open {
+.mod-overlay.is-hidden {
+  opacity: 0;
+}
+
+.mod-overlay.is-shown {
+  display: block;
   opacity: 1;
 }
 
-.overlay__outer-wrapper {
-  display: table;
-  height: 100%;
-  width: 100%;
-}
-
-.overlay__inner-wrapper {
-  display: table-cell;
-  height: 100%;
-  padding: 40px 0;
-  vertical-align: middle;
-}
-
-.overlay__background {
-  background-color: rgba(0,0,0, 0.5);
-  bottom: 0;
-  cursor: pointer;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 0;
-}
-
 .overlay__content {
-  background-color: white;
-  margin: 0 auto;
-  padding: 20px;
-  position: relative;
+  background-color: #fafafa;
+  margin: 4rem auto;
+  max-width: 720px;
   width: 80%;
-  z-index: 10;
-}
-
-.overlay__content__header {
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 10;
-
-  &
+  padding: 2rem;
 }
