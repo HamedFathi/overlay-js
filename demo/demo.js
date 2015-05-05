@@ -1,27 +1,12 @@
-import Overlay from '../overlay-es6';
+import AjaxOverlay from '../src/ajax-overlay';
 
-let overlay = new Overlay();
+let overlay = new AjaxOverlay();
 
-document.querySelector('.trigger').addEventListener('click', () => {
-  overlay.open();
+document.querySelector('.js-overlay-toggle').addEventListener('click', e => {
+  e.preventDefault();
+  overlay.render(`
+    <h2>This is a HTML string rendered inside the overlay</h2>
+    <p>It's not neccessary to render from JS, you can also just render static content and use the overlay module as a show / hide toggle.</p>
+    <p>Or you could use a template rendering engine like <a href="http://handlebarsjs.com/">Handlebars</a></p>
+  `);
 });
-
-//$(function() {
-//  var sampleContent = $("script.sample-content").html(),
-//      overlay = new Overlay();
-//
-//  // trigger
-//  $(".trigger").on("click", function(e) {
-//    overlay.append_content(sample_content);
-//    overlay.show("example-content-key");
-//  });
-//
-//  // events
-//  $(window).on("overlay.show.default", function(e) {
-//    console.log("Overlay is shown");
-//  });
-//
-//  $(window).on("overlay.hide.default", function(e) {
-//    console.log("Overlay is hidden");
-//  });
-//});
