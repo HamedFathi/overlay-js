@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+- Complete rewrite using ES6 modules and a new approach
+
+---
+
 ## 0.2.3
 
 - Fix hide_callback, clear_content was executed too early
