@@ -172,6 +172,12 @@ var Overlay = (function () {
     value: function bind() {
       var _this = this;
 
+      document.body.addEventListener('keyup', function (e) {
+        if (e.keyCode === 27) {
+          _this.hide();
+        }
+      });
+
       this.bindDelegate('click', this.options.selectors.show, function (e) {
         e.preventDefault();
         _this.show();

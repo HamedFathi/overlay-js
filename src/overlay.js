@@ -43,6 +43,12 @@ export default class Overlay {
 
   // Bind event handlers to certain DOM elements, specified through
   bind () {
+    document.body.addEventListener('keyup', e => {
+      if (e.keyCode === 27) {
+        this.hide();
+      }
+    });
+
     this.bindDelegate('click', this.options.selectors.show, e => {
       e.preventDefault();
       this.show();
