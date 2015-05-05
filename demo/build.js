@@ -3,19 +3,18 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _ajaxOverlay = require('../ajax-overlay');
+var _srcAjaxOverlay = require('../src/ajax-overlay');
 
-var _ajaxOverlay2 = _interopRequireDefault(_ajaxOverlay);
+var _srcAjaxOverlay2 = _interopRequireDefault(_srcAjaxOverlay);
 
-var overlay = new _ajaxOverlay2['default']();
+var overlay = new _srcAjaxOverlay2['default']();
 
 document.querySelector('.js-overlay-toggle').addEventListener('click', function (e) {
   e.preventDefault();
-  console.log('hey');
   overlay.render('\n    <h2>This is a HTML string rendered inside the overlay</h2>\n    <p>It\'s not neccessary to render from JS, you can also just render static content and use the overlay module as a show / hide toggle.</p>\n    <p>Or you could use a template rendering engine like <a href="http://handlebarsjs.com/">Handlebars</a></p>\n  ');
 });
 
-},{"../ajax-overlay":2}],2:[function(require,module,exports){
+},{"../src/ajax-overlay":2}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
