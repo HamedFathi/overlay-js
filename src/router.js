@@ -1,7 +1,7 @@
 export default class Router {
   constructor (handlers) {
     this.isSupported = (!!history && !!history.pushState);
-    this.root = '';
+    this.root = {};
 
     this.handlers = {
       pop: handlers.pop || (function () {})
@@ -11,8 +11,12 @@ export default class Router {
   }
 
   init () {
-    this.root = window.location.pathname;
-    this.replace(this.root, { title: document.title });
+    this.root = {
+      url: window.location.pathname,
+      title: document.title
+    };
+
+    this.replace(this.root.url, { title: this.root.title });
     return this;
   }
 
@@ -28,6 +32,11 @@ export default class Router {
     if (this.isSupported) {
       state.url = url;
       state.title = state.title || '';
+
+      if (state.title.length > 0) {
+        document.title = state.title;
+      }
+
       window.history.pushState(state, state.title, url);
     }
   }
@@ -36,15 +45,16 @@ export default class Router {
     if (this.isSupported) {
       state.url = url;
       state.title = state.title || '';
+
+      if (state.title.length > 0) {
+        document.title = state.title;
+      }
+
       window.history.replaceState(state, state.title, url);
     }
   }
 
   pushRoot () {
-    this.push(this.root);
-  }
-
-  pop () {
-
+    this.push(this.root.url, { url: this.root.url, title: this.root.title });
   }
 }

@@ -9,7 +9,6 @@ export default class AjaxOverlay extends Overlay {
 
     super(el, options);
 
-    this.root = window.location.pathname;
     this.router = new Router({
       pop: (state) => { this.handleRoutePop(state) }
     });
@@ -53,29 +52,51 @@ export default class AjaxOverlay extends Overlay {
         return false;
       }
 
+      // If the <title> tag is present in the responseText
+      // use that as the title in the browser / history
+      let title = /<title>(.*)<\/title>/gi.exec(xhr.responseText);
+
+      if (!!title.length) {
+        title = title[1];
+      } else {
+        title = document.title;
+      }
+
       // Expects HTML as responseText
       this.render(xhr.responseText);
-      this.show(url);
+      this.show(url, title);
     }
 
     xhr.send();
   }
 
-  show (url = '', push = true) {
+  // Show overlay
+  // @param {String}  url     URL to keep in the browser history
+  // @param {String}  title   Title to associate with the URL in the browser history
+  // @param {Bool}    push    Push to browser history?
+  show (url = '', title = '', push = true) {
     if (super.show() && !!push) {
-      this.router.push(url, { shown: true });
+      this.router.push(url, { title: title, shown: true });
     }
   }
 
+  // Hide overlay
+  // @param {Bool}    push    Push to browser history?
   hide (push = true) {
     if (super.hide() && !!push) {
       this.router.pushRoot();
     }
   }
 
+  // Handle browser popstate event
+  // @param {Object} state  The state object associated with the popstate event
   handleRoutePop (state) {
+    if (!!state.title && state.title.length > 0) {
+      document.title = state.title;
+    }
+
     if (!!state && !!state.shown) {
-      this.show(state.url, false);
+      this.show(state.url, state.title, false);
     } else {
       this.hide(false);
     }

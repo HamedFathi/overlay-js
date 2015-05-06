@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- History routing with changing document title if included in the AJAX response
+
 ## 1.0.2
 ## 1.0.1
 

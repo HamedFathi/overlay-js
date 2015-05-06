@@ -23,9 +23,9 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { desc = parent = getter = undefined; _again = false; var object = _x5,
-    property = _x6,
-    receiver = _x7; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { desc = parent = getter = undefined; _again = false; var object = _x6,
+    property = _x7,
+    receiver = _x8; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -55,7 +55,6 @@ var AjaxOverlay = (function (_Overlay) {
 
     _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'constructor', this).call(this, el, options);
 
-    this.root = window.location.pathname;
     this.router = new _router2['default']({
       pop: function pop(state) {
         _this2.handleRoutePop(state);
@@ -112,25 +111,44 @@ var AjaxOverlay = (function (_Overlay) {
           return false;
         }
 
+        // If the <title> tag is present in the responseText
+        // use that as the title in the browser / history
+        var title = /<title>(.*)<\/title>/gi.exec(xhr.responseText);
+
+        if (!!title.length) {
+          title = title[1];
+        } else {
+          title = document.title;
+        }
+
         // Expects HTML as responseText
         _this4.render(xhr.responseText);
-        _this4.show(url);
+        _this4.show(url, title);
       };
 
       xhr.send();
     }
   }, {
     key: 'show',
+
+    // Show overlay
+    // @param {String}  url     URL to keep in the browser history
+    // @param {String}  title   Title to associate with the URL in the browser history
+    // @param {Bool}    push    Push to browser history?
     value: function show() {
       var url = arguments[0] === undefined ? '' : arguments[0];
-      var push = arguments[1] === undefined ? true : arguments[1];
+      var title = arguments[1] === undefined ? '' : arguments[1];
+      var push = arguments[2] === undefined ? true : arguments[2];
 
       if (_get(Object.getPrototypeOf(AjaxOverlay.prototype), 'show', this).call(this) && !!push) {
-        this.router.push(url, { shown: true });
+        this.router.push(url, { title: title, shown: true });
       }
     }
   }, {
     key: 'hide',
+
+    // Hide overlay
+    // @param {Bool}    push    Push to browser history?
     value: function hide() {
       var push = arguments[0] === undefined ? true : arguments[0];
 
@@ -140,9 +158,16 @@ var AjaxOverlay = (function (_Overlay) {
     }
   }, {
     key: 'handleRoutePop',
+
+    // Handle browser popstate event
+    // @param {Object} state  The state object associated with the popstate event
     value: function handleRoutePop(state) {
+      if (!!state.title && state.title.length > 0) {
+        document.title = state.title;
+      }
+
       if (!!state && !!state.shown) {
-        this.show(state.url, false);
+        this.show(state.url, state.title, false);
       } else {
         this.hide(false);
       }
@@ -341,7 +366,7 @@ var Router = (function () {
     _classCallCheck(this, Router);
 
     this.isSupported = !!history && !!history.pushState;
-    this.root = '';
+    this.root = {};
 
     this.handlers = {
       pop: handlers.pop || function () {}
@@ -353,8 +378,12 @@ var Router = (function () {
   _createClass(Router, [{
     key: 'init',
     value: function init() {
-      this.root = window.location.pathname;
-      this.replace(this.root, { title: document.title });
+      this.root = {
+        url: window.location.pathname,
+        title: document.title
+      };
+
+      this.replace(this.root.url, { title: this.root.title });
       return this;
     }
   }, {
@@ -376,6 +405,11 @@ var Router = (function () {
       if (this.isSupported) {
         state.url = url;
         state.title = state.title || '';
+
+        if (state.title.length > 0) {
+          document.title = state.title;
+        }
+
         window.history.pushState(state, state.title, url);
       }
     }
@@ -387,17 +421,19 @@ var Router = (function () {
       if (this.isSupported) {
         state.url = url;
         state.title = state.title || '';
+
+        if (state.title.length > 0) {
+          document.title = state.title;
+        }
+
         window.history.replaceState(state, state.title, url);
       }
     }
   }, {
     key: 'pushRoot',
     value: function pushRoot() {
-      this.push(this.root);
+      this.push(this.root.url, { url: this.root.url, title: this.root.title });
     }
-  }, {
-    key: 'pop',
-    value: function pop() {}
   }]);
 
   return Router;
