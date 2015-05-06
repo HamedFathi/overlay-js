@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+## 1.0.1
+
+- HTML5 History routing
+
 ## 1.0.0
 
 - Complete rewrite using ES6 modules and a new approach
