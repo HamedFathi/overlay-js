@@ -56,7 +56,7 @@ export default class AjaxOverlay extends Overlay {
       // use that as the title in the browser / history
       let title = /<title>(.*)<\/title>/gi.exec(xhr.responseText);
 
-      if (!!title.length) {
+      if (!!title && title.length >= 2) {
         title = title[1];
       } else {
         title = document.title;

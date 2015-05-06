@@ -9,6 +9,14 @@ var _srcAjaxOverlay2 = _interopRequireDefault(_srcAjaxOverlay);
 
 var overlay = new _srcAjaxOverlay2['default']();
 
+document.body.addEventListener('overlay:show', function (e) {
+  console.log('overlay shown');
+});
+
+document.body.addEventListener('overlay:hide', function (e) {
+  console.log('overlay hidden');
+});
+
 document.querySelector('.js-overlay-toggle').addEventListener('click', function (e) {
   e.preventDefault();
   overlay.render('\n    <h2>This is a HTML string rendered inside the overlay</h2>\n    <p>It\'s not neccessary to render from JS, you can also just render static content and use the overlay module as a show / hide toggle.</p>\n    <p>Or you could use a template rendering engine like <a href="http://handlebarsjs.com/">Handlebars</a></p>\n  ');
@@ -115,7 +123,7 @@ var AjaxOverlay = (function (_Overlay) {
         // use that as the title in the browser / history
         var title = /<title>(.*)<\/title>/gi.exec(xhr.responseText);
 
-        if (!!title.length) {
+        if (!!title && title.length >= 2) {
           title = title[1];
         } else {
           title = document.title;
@@ -307,8 +315,14 @@ var Overlay = (function () {
         return false;
       }
 
-      var regex = new RegExp('\\s*' + this.options.states.hidden + '\\s*', 'gi'); // Template string not working because of reasons
+      var regex = new RegExp('\\s*' + this.options.states.hidden + '\\s*', 'gi'),
+          // Template string not working because of reasons
+      evt = new CustomEvent('overlay:show', { bubbles: true, cancelable: true }); // @fixme - IE9 support
+
       this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.shown;
+
+      document.body.dispatchEvent(evt);
+
       return true;
     }
   }, {
@@ -320,8 +334,14 @@ var Overlay = (function () {
         return false;
       }
 
-      var regex = new RegExp('\\s*' + this.options.states.shown + '\\s*', 'gi'); // Template string not working because of reasons
+      var regex = new RegExp('\\s*' + this.options.states.shown + '\\s*', 'gi'),
+          // Template string not working because of reasons
+      evt = new CustomEvent('overlay:hide', { bubbles: true, cancelable: true }); // @fixme - IE9 support
+
       this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
+
+      document.body.dispatchEvent(evt);
+
       return true;
     }
   }, {

@@ -97,8 +97,13 @@ export default class Overlay {
       return false;
     }
 
-    let regex = new RegExp("\\s*" + this.options.states.hidden + "\\s*", 'gi'); // Template string not working because of reasons
+    let regex = new RegExp("\\s*" + this.options.states.hidden + "\\s*", 'gi'), // Template string not working because of reasons
+        evt = new CustomEvent('overlay:show', { bubbles: true, cancelable: true }); // @fixme - IE9 support
+
     this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.shown;
+
+    document.body.dispatchEvent(evt);
+
     return true;
   }
 
@@ -108,8 +113,13 @@ export default class Overlay {
       return false;
     }
 
-    let regex = new RegExp("\\s*" + this.options.states.shown + "\\s*", 'gi'); // Template string not working because of reasons
+    let regex = new RegExp("\\s*" + this.options.states.shown + "\\s*", 'gi'), // Template string not working because of reasons
+        evt = new CustomEvent('overlay:hide', { bubbles: true, cancelable: true }); // @fixme - IE9 support
+
     this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
+
+    document.body.dispatchEvent(evt);
+
     return true;
   }
 

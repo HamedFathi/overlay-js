@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- `overlay:show` and `overlay:hide` event
+
 ## 1.0.3
 
 - History routing with changing document title if included in the AJAX response
@@ -11,7 +15,7 @@
 
 ## 1.0.0
 
-- Complete rewrite using ES6 modules and a new approach
+- **Complete rewrite** using ES6 modules and a new approach
 
 ---
 

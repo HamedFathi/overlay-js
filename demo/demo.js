@@ -2,6 +2,14 @@ import AjaxOverlay from '../src/ajax-overlay';
 
 let overlay = new AjaxOverlay();
 
+document.body.addEventListener('overlay:show', e => {
+  console.log('overlay shown');
+});
+
+document.body.addEventListener('overlay:hide', e => {
+  console.log('overlay hidden');
+});
+
 document.querySelector('.js-overlay-toggle').addEventListener('click', e => {
   e.preventDefault();
   overlay.render(`
