@@ -93,14 +93,24 @@ export default class Overlay {
 
   // Show the overlay
   show () {
+    if (this.el.className.indexOf(this.options.states.shown) !== -1) {
+      return false;
+    }
+
     let regex = new RegExp("\\s*" + this.options.states.hidden + "\\s*", 'gi'); // Template string not working because of reasons
     this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.shown;
+    return true;
   }
 
   // Hide the overlay
   hide () {
+    if (this.el.className.indexOf(this.options.states.hidden) !== -1) {
+      return false;
+    }
+
     let regex = new RegExp("\\s*" + this.options.states.shown + "\\s*", 'gi'); // Template string not working because of reasons
     this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
+    return true;
   }
 
   // Toggle the overlay

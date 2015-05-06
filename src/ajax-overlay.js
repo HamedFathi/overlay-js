@@ -1,4 +1,5 @@
 import Overlay from './overlay';
+import Router from './router';
 
 export default class AjaxOverlay extends Overlay {
   constructor (el, options = { selectors: {}, states: {} }) {
@@ -7,6 +8,17 @@ export default class AjaxOverlay extends Overlay {
     }
 
     super(el, options);
+
+    this.root = window.location.pathname;
+    this.router = new Router({
+      pop: (state) => { this.handleRoutePop(state) }
+    });
+  }
+
+  init () {
+    super.init();
+
+    return this;
   }
 
   bind () {
@@ -23,6 +35,8 @@ export default class AjaxOverlay extends Overlay {
         this.fetch(href);
       }
     });
+
+    return this;
   }
 
   // Fetch HTML from an URL and render it inside the overlay
@@ -41,9 +55,29 @@ export default class AjaxOverlay extends Overlay {
 
       // Expects HTML as responseText
       this.render(xhr.responseText);
-      this.show();
+      this.show(url);
     }
 
     xhr.send();
+  }
+
+  show (url = '', push = true) {
+    if (super.show() && !!push) {
+      this.router.push(url, { shown: true });
+    }
+  }
+
+  hide (push = true) {
+    if (super.hide() && !!push) {
+      this.router.pushRoot();
+    }
+  }
+
+  handleRoutePop (state) {
+    if (!!state && !!state.shown) {
+      this.show(state.url, false);
+    } else {
+      this.hide(false);
+    }
   }
 }

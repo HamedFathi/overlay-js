@@ -23,9 +23,9 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { desc = parent = getter = undefined; _again = false; var object = _x2,
-    property = _x3,
-    receiver = _x4; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { desc = parent = getter = undefined; _again = false; var object = _x5,
+    property = _x6,
+    receiver = _x7; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -37,8 +37,14 @@ var _overlay = require('./overlay');
 
 var _overlay2 = _interopRequireDefault(_overlay);
 
+var _router = require('./router');
+
+var _router2 = _interopRequireDefault(_router);
+
 var AjaxOverlay = (function (_Overlay) {
   function AjaxOverlay(el) {
+    var _this2 = this;
+
     var options = arguments[1] === undefined ? { selectors: {}, states: {} } : arguments[1];
 
     _classCallCheck(this, AjaxOverlay);
@@ -48,14 +54,28 @@ var AjaxOverlay = (function (_Overlay) {
     }
 
     _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'constructor', this).call(this, el, options);
+
+    this.root = window.location.pathname;
+    this.router = new _router2['default']({
+      pop: function pop(state) {
+        _this2.handleRoutePop(state);
+      }
+    });
   }
 
   _inherits(AjaxOverlay, _Overlay);
 
   _createClass(AjaxOverlay, [{
+    key: 'init',
+    value: function init() {
+      _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'init', this).call(this);
+
+      return this;
+    }
+  }, {
     key: 'bind',
     value: function bind() {
-      var _this2 = this;
+      var _this3 = this;
 
       _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'bind', this).call(this);
 
@@ -67,9 +87,11 @@ var AjaxOverlay = (function (_Overlay) {
 
         // Automatically load href attribute if it's on the trigger element
         if (!!href && href.length > 1) {
-          _this2.fetch(href);
+          _this3.fetch(href);
         }
       });
+
+      return this;
     }
   }, {
     key: 'fetch',
@@ -77,11 +99,13 @@ var AjaxOverlay = (function (_Overlay) {
     // Fetch HTML from an URL and render it inside the overlay
     // @param {String}  url   Not supporting CORS properly, so try using relative paths altogether
     value: function fetch(url) {
-      var _this3 = this;
+      var _this4 = this;
 
       var xhr = new XMLHttpRequest();
 
       xhr.open('GET', url, true);
+
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
       xhr.onreadystatechange = function () {
         if (xhr.readyState !== 4 || xhr.status !== 200) {
@@ -89,11 +113,39 @@ var AjaxOverlay = (function (_Overlay) {
         }
 
         // Expects HTML as responseText
-        _this3.render(xhr.responseText);
-        _this3.show();
+        _this4.render(xhr.responseText);
+        _this4.show(url);
       };
 
       xhr.send();
+    }
+  }, {
+    key: 'show',
+    value: function show() {
+      var url = arguments[0] === undefined ? '' : arguments[0];
+      var push = arguments[1] === undefined ? true : arguments[1];
+
+      if (_get(Object.getPrototypeOf(AjaxOverlay.prototype), 'show', this).call(this) && !!push) {
+        this.router.push(url, { shown: true });
+      }
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      var push = arguments[0] === undefined ? true : arguments[0];
+
+      if (_get(Object.getPrototypeOf(AjaxOverlay.prototype), 'hide', this).call(this) && !!push) {
+        this.router.pushRoot();
+      }
+    }
+  }, {
+    key: 'handleRoutePop',
+    value: function handleRoutePop(state) {
+      if (!!state && !!state.shown) {
+        this.show(state.url, false);
+      } else {
+        this.hide(false);
+      }
     }
   }]);
 
@@ -103,7 +155,7 @@ var AjaxOverlay = (function (_Overlay) {
 exports['default'] = AjaxOverlay;
 module.exports = exports['default'];
 
-},{"./overlay":3}],3:[function(require,module,exports){
+},{"./overlay":3,"./router":4}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -226,16 +278,26 @@ var Overlay = (function () {
 
     // Show the overlay
     value: function show() {
+      if (this.el.className.indexOf(this.options.states.shown) !== -1) {
+        return false;
+      }
+
       var regex = new RegExp('\\s*' + this.options.states.hidden + '\\s*', 'gi'); // Template string not working because of reasons
       this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.shown;
+      return true;
     }
   }, {
     key: 'hide',
 
     // Hide the overlay
     value: function hide() {
+      if (this.el.className.indexOf(this.options.states.hidden) !== -1) {
+        return false;
+      }
+
       var regex = new RegExp('\\s*' + this.options.states.shown + '\\s*', 'gi'); // Template string not working because of reasons
       this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
+      return true;
     }
   }, {
     key: 'toggle',
@@ -261,6 +323,87 @@ var Overlay = (function () {
 })();
 
 exports['default'] = Overlay;
+module.exports = exports['default'];
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Router = (function () {
+  function Router(handlers) {
+    _classCallCheck(this, Router);
+
+    this.isSupported = !!history && !!history.pushState;
+    this.root = '';
+
+    this.handlers = {
+      pop: handlers.pop || function () {}
+    };
+
+    this.init().bind();
+  }
+
+  _createClass(Router, [{
+    key: 'init',
+    value: function init() {
+      this.root = window.location.pathname;
+      this.replace(this.root, { title: document.title });
+      return this;
+    }
+  }, {
+    key: 'bind',
+    value: function bind() {
+      var _this = this;
+
+      window.addEventListener('popstate', function (e) {
+        _this.handlers.pop(e.state);
+      });
+
+      return this;
+    }
+  }, {
+    key: 'push',
+    value: function push(url) {
+      var state = arguments[1] === undefined ? {} : arguments[1];
+
+      if (this.isSupported) {
+        state.url = url;
+        state.title = state.title || '';
+        window.history.pushState(state, state.title, url);
+      }
+    }
+  }, {
+    key: 'replace',
+    value: function replace(url) {
+      var state = arguments[1] === undefined ? {} : arguments[1];
+
+      if (this.isSupported) {
+        state.url = url;
+        state.title = state.title || '';
+        window.history.replaceState(state, state.title, url);
+      }
+    }
+  }, {
+    key: 'pushRoot',
+    value: function pushRoot() {
+      this.push(this.root);
+    }
+  }, {
+    key: 'pop',
+    value: function pop() {}
+  }]);
+
+  return Router;
+})();
+
+exports['default'] = Router;
 module.exports = exports['default'];
 
 },{}]},{},[1])
