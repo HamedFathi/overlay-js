@@ -10,17 +10,19 @@ var _srcAjaxOverlay2 = _interopRequireDefault(_srcAjaxOverlay);
 var overlay = new _srcAjaxOverlay2['default']();
 
 document.body.addEventListener('overlay:show', function (e) {
-  console.log('overlay shown');
+  console.log('Overlay shown');
 });
 
 document.body.addEventListener('overlay:hide', function (e) {
-  console.log('overlay hidden');
+  console.log('Overlay hidden');
 });
 
-document.querySelector('.js-overlay-toggle').addEventListener('click', function (e) {
-  e.preventDefault();
-  overlay.render('\n    <h2>This is a HTML string rendered inside the overlay</h2>\n    <p>It\'s not neccessary to render from JS, you can also just render static content and use the overlay module as a show / hide toggle.</p>\n    <p>Or you could use a template rendering engine like <a href="http://handlebarsjs.com/">Handlebars</a></p>\n  ');
-});
+if (!!document.querySelector('.js-overlay-toggle')) {
+  document.querySelector('.js-overlay-toggle').addEventListener('click', function (e) {
+    e.preventDefault();
+    overlay.render('\n      <h2>This is a HTML string rendered inside the overlay</h2>\n      <p>It\'s not neccessary to render from JS, you can also just render static content and use the overlay module as a show / hide toggle.</p>\n      <p>Or you could use a template rendering engine like <a href="http://handlebarsjs.com/">Handlebars</a></p>\n    ');
+  });
+}
 
 },{"../src/ajax-overlay":2}],2:[function(require,module,exports){
 'use strict';
@@ -75,14 +77,51 @@ var AjaxOverlay = (function (_Overlay) {
   _createClass(AjaxOverlay, [{
     key: 'init',
     value: function init() {
+      var _this3 = this;
+
       _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'init', this).call(this);
+
+      if (!!document.querySelector('link[rel="up"]')) {
+        (function () {
+          var root = document.querySelector('link[rel="up"]').getAttribute('href'),
+              xhr = new XMLHttpRequest();
+
+          xhr.open('GET', root, true);
+
+          xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4 || xhr.status !== 200) {
+              return false;
+            }
+
+            // If the <title> tag is present in the responseText
+            // use that as the title in the browser / history
+            var title = /<title>(.*)<\/title>/gi.exec(xhr.responseText),
+                body = document.createElement('div');
+
+            if (!!title && title.length >= 2) {
+              title = title[1];
+            } else {
+              title = document.title;
+            }
+
+            _this3.router.setRoot(root, title);
+
+            body.innerHTML = xhr.responseText;
+            document.body.appendChild(body);
+          };
+
+          xhr.send();
+        })();
+      }
 
       return this;
     }
   }, {
     key: 'bind',
     value: function bind() {
-      var _this3 = this;
+      var _this4 = this;
 
       _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'bind', this).call(this);
 
@@ -94,7 +133,7 @@ var AjaxOverlay = (function (_Overlay) {
 
         // Automatically load href attribute if it's on the trigger element
         if (!!href && href.length > 1) {
-          _this3.fetch(href);
+          _this4.fetch(href);
         }
       });
 
@@ -106,7 +145,7 @@ var AjaxOverlay = (function (_Overlay) {
     // Fetch HTML from an URL and render it inside the overlay
     // @param {String}  url   Not supporting CORS properly, so try using relative paths altogether
     value: function fetch(url) {
-      var _this4 = this;
+      var _this5 = this;
 
       var xhr = new XMLHttpRequest();
 
@@ -130,8 +169,8 @@ var AjaxOverlay = (function (_Overlay) {
         }
 
         // Expects HTML as responseText
-        _this4.render(xhr.responseText);
-        _this4.show(url, title);
+        _this5.render(xhr.responseText);
+        _this5.show(url, title);
       };
 
       xhr.send();
@@ -412,6 +451,7 @@ var Router = (function () {
       var _this = this;
 
       window.addEventListener('popstate', function (e) {
+        console.log('ja dus');
         _this.handlers.pop(e.state);
       });
 
@@ -453,6 +493,14 @@ var Router = (function () {
     key: 'pushRoot',
     value: function pushRoot() {
       this.push(this.root.url, { url: this.root.url, title: this.root.title });
+    }
+  }, {
+    key: 'setRoot',
+    value: function setRoot(url) {
+      var title = arguments[1] === undefined ? '' : arguments[1];
+
+      this.root.url = url;
+      this.root.title = title;
     }
   }]);
 

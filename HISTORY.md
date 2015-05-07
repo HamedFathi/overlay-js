@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- When providing a `<link rel="up" href="/foo/bar">` tag in the `<head>`, the overlay will fetch that page's contents and append it to the body
+
 ## 1.0.4
 
 - `overlay:show` and `overlay:hide` event

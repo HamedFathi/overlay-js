@@ -55,6 +55,4 @@ There's a tiny bit of CSS that you might want to include so it works smoothly. T
 
 ## Installation
 
-```
-$ bower install overlay-js --save
-```
+`$ bower install overlay-js --save`

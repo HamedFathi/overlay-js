@@ -17,6 +17,39 @@ export default class AjaxOverlay extends Overlay {
   init () {
     super.init();
 
+    if (!!document.querySelector('link[rel="up"]')) {
+      let root = document.querySelector('link[rel="up"]').getAttribute('href'),
+          xhr = new XMLHttpRequest();
+
+      xhr.open('GET', root, true);
+
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState !== 4 || xhr.status !== 200) {
+          return false;
+        }
+
+        // If the <title> tag is present in the responseText
+        // use that as the title in the browser / history
+        let title = /<title>(.*)<\/title>/gi.exec(xhr.responseText),
+            body = document.createElement('div');
+
+        if (!!title && title.length >= 2) {
+          title = title[1];
+        } else {
+          title = document.title;
+        }
+
+        this.router.setRoot(root, title);
+
+        body.innerHTML = xhr.responseText;
+        document.body.appendChild(body);
+      }
+
+      xhr.send();
+    }
+
     return this;
   }
 

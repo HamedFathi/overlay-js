@@ -22,6 +22,7 @@ export default class Router {
 
   bind () {
     window.addEventListener('popstate', e => {
+      console.log('ja dus');
       this.handlers.pop(e.state);
     });
 
@@ -56,5 +57,10 @@ export default class Router {
 
   pushRoot () {
     this.push(this.root.url, { url: this.root.url, title: this.root.title });
+  }
+
+  setRoot (url, title = '') {
+    this.root.url = url;
+    this.root.title = title;
   }
 }
