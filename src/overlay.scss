@@ -1,0 +1,31 @@
+$transition-duration: 220ms;
+
+.overlay {
+  background-color: rgba(0, 0, 0, .45);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transition: opacity $transition-duration ease-in-out, z-index 16ms linear $transition-duration;
+  z-index: -1;
+
+  &.is-shown {
+    opacity: 1;
+    transition: opacity $transition-duration ease-in-out, z-index 16ms linear;
+    z-index: 1;
+  }
+}
+
+.overlay__content {
+  background-color: #fff;
+  box-sizing: border-box;
+  margin: 4rem auto;
+  max-width: 720px;
+  padding: 2rem;
+  width: 80%;
+}
