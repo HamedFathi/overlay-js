@@ -33,9 +33,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { desc = parent = getter = undefined; _again = false; var object = _x6,
-    property = _x7,
-    receiver = _x8; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { var object = _x6, property = _x7, receiver = _x8; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -52,10 +50,12 @@ var _router = require('./router');
 var _router2 = _interopRequireDefault(_router);
 
 var AjaxOverlay = (function (_Overlay) {
-  function AjaxOverlay(el) {
-    var _this2 = this;
+  _inherits(AjaxOverlay, _Overlay);
 
-    var options = arguments[1] === undefined ? { selectors: {}, states: {} } : arguments[1];
+  function AjaxOverlay(el) {
+    var _this = this;
+
+    var options = arguments.length <= 1 || arguments[1] === undefined ? { selectors: {}, states: {} } : arguments[1];
 
     _classCallCheck(this, AjaxOverlay);
 
@@ -67,23 +67,22 @@ var AjaxOverlay = (function (_Overlay) {
 
     this.router = new _router2['default']({
       pop: function pop(state) {
-        _this2.handleRoutePop(state);
+        _this.handleRoutePop(state);
       }
     });
   }
 
-  _inherits(AjaxOverlay, _Overlay);
-
   _createClass(AjaxOverlay, [{
     key: 'init',
     value: function init() {
-      var _this3 = this;
+      var _this2 = this;
 
       _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'init', this).call(this);
 
       if (!!document.querySelector('link[rel="up"]')) {
         (function () {
-          var root = document.querySelector('link[rel="up"]').getAttribute('href'),
+          var replace = document.querySelector('link[rel="up"]'),
+              root = replace.getAttribute('href'),
               xhr = new XMLHttpRequest();
 
           xhr.open('GET', root, true);
@@ -106,10 +105,11 @@ var AjaxOverlay = (function (_Overlay) {
               title = document.title;
             }
 
-            _this3.router.setRoot(root, title);
+            _this2.router.setRoot(root, title);
 
             body.innerHTML = xhr.responseText;
-            document.body.appendChild(body);
+            body.innerHTML = body.querySelector('.' + replace.parentNode.className.split(' ').join('.')).innerHTML;
+            replace.parentNode.replaceChild(body, replace);
           };
 
           xhr.send();
@@ -121,7 +121,7 @@ var AjaxOverlay = (function (_Overlay) {
   }, {
     key: 'bind',
     value: function bind() {
-      var _this4 = this;
+      var _this3 = this;
 
       _get(Object.getPrototypeOf(AjaxOverlay.prototype), 'bind', this).call(this);
 
@@ -133,7 +133,7 @@ var AjaxOverlay = (function (_Overlay) {
 
         // Automatically load href attribute if it's on the trigger element
         if (!!href && href.length > 1) {
-          _this4.fetch(href);
+          _this3.fetch(href);
         }
       });
 
@@ -145,7 +145,7 @@ var AjaxOverlay = (function (_Overlay) {
     // Fetch HTML from an URL and render it inside the overlay
     // @param {String}  url   Not supporting CORS properly, so try using relative paths altogether
     value: function fetch(url) {
-      var _this5 = this;
+      var _this4 = this;
 
       var xhr = new XMLHttpRequest();
 
@@ -169,8 +169,8 @@ var AjaxOverlay = (function (_Overlay) {
         }
 
         // Expects HTML as responseText
-        _this5.render(xhr.responseText);
-        _this5.show(url, title);
+        _this4.render(xhr.responseText);
+        _this4.show(url, title);
       };
 
       xhr.send();
@@ -183,9 +183,9 @@ var AjaxOverlay = (function (_Overlay) {
     // @param {String}  title   Title to associate with the URL in the browser history
     // @param {Bool}    push    Push to browser history?
     value: function show() {
-      var url = arguments[0] === undefined ? '' : arguments[0];
-      var title = arguments[1] === undefined ? '' : arguments[1];
-      var push = arguments[2] === undefined ? true : arguments[2];
+      var url = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+      var title = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+      var push = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
       if (_get(Object.getPrototypeOf(AjaxOverlay.prototype), 'show', this).call(this) && !!push) {
         this.router.push(url, { title: title, shown: true });
@@ -197,7 +197,7 @@ var AjaxOverlay = (function (_Overlay) {
     // Hide overlay
     // @param {Bool}    push    Push to browser history?
     value: function hide() {
-      var push = arguments[0] === undefined ? true : arguments[0];
+      var push = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
       if (_get(Object.getPrototypeOf(AjaxOverlay.prototype), 'hide', this).call(this) && !!push) {
         this.router.pushRoot();
@@ -209,14 +209,16 @@ var AjaxOverlay = (function (_Overlay) {
     // Handle browser popstate event
     // @param {Object} state  The state object associated with the popstate event
     value: function handleRoutePop(state) {
-      if (!!state.title && state.title.length > 0) {
-        document.title = state.title;
-      }
+      if (!!state) {
+        if (!!state.title && state.title.length > 0) {
+          document.title = state.title;
+        }
 
-      if (!!state && !!state.shown) {
-        this.show(state.url, state.title, false);
-      } else {
-        this.hide(false);
+        if (!!state && !!state.shown) {
+          this.show(state.url, state.title, false);
+        } else {
+          this.hide(false);
+        }
       }
     }
   }]);
@@ -245,8 +247,8 @@ var Overlay = (function () {
   // @param {Object}      options
 
   function Overlay() {
-    var el = arguments[0] === undefined ? document.getElementsByClassName('js-overlay')[0] : arguments[0];
-    var options = arguments[1] === undefined ? { selectors: {}, states: {} } : arguments[1];
+    var el = arguments.length <= 0 || arguments[0] === undefined ? document.getElementsByClassName('js-overlay')[0] : arguments[0];
+    var options = arguments.length <= 1 || arguments[1] === undefined ? { selectors: {}, states: {} } : arguments[1];
 
     _classCallCheck(this, Overlay);
 
@@ -332,7 +334,7 @@ var Overlay = (function () {
       // Listen to all events of type evt
       document.body.addEventListener(evt, function (e) {
         // If e.target matches the specified selector or is a child element
-        if (!!matches.call(e.target, '' + selector + ', ' + selector + ' *')) {
+        if (!!matches.call(e.target, selector + ', ' + selector + ' *')) {
           // Find the actual element that matches the selector
           var matchingElement = e.target;
           while (!matches.call(matchingElement, selector)) {
@@ -460,7 +462,7 @@ var Router = (function () {
   }, {
     key: 'push',
     value: function push(url) {
-      var state = arguments[1] === undefined ? {} : arguments[1];
+      var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       if (this.isSupported) {
         state.url = url;
@@ -476,7 +478,7 @@ var Router = (function () {
   }, {
     key: 'replace',
     value: function replace(url) {
-      var state = arguments[1] === undefined ? {} : arguments[1];
+      var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
       if (this.isSupported) {
         state.url = url;
@@ -497,7 +499,7 @@ var Router = (function () {
   }, {
     key: 'setRoot',
     value: function setRoot(url) {
-      var title = arguments[1] === undefined ? '' : arguments[1];
+      var title = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
 
       this.root.url = url;
       this.root.title = title;

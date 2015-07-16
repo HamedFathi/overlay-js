@@ -18,7 +18,8 @@ export default class AjaxOverlay extends Overlay {
     super.init();
 
     if (!!document.querySelector('link[rel="up"]')) {
-      let root = document.querySelector('link[rel="up"]').getAttribute('href'),
+      let replace = document.querySelector('link[rel="up"]'),
+          root = replace.getAttribute('href'),
           xhr = new XMLHttpRequest();
 
       xhr.open('GET', root, true);
@@ -44,7 +45,8 @@ export default class AjaxOverlay extends Overlay {
         this.router.setRoot(root, title);
 
         body.innerHTML = xhr.responseText;
-        document.body.appendChild(body);
+        body.innerHTML = body.querySelector(`.${replace.parentNode.className.split(' ').join('.')}`).innerHTML;
+        replace.parentNode.replaceChild(body, replace);
       }
 
       xhr.send();
@@ -124,18 +126,16 @@ export default class AjaxOverlay extends Overlay {
   // Handle browser popstate event
   // @param {Object} state  The state object associated with the popstate event
   handleRoutePop (state) {
-    if (!state) {
-      return false;
-    }
+    if (!!state) {
+      if (!!state.title && state.title.length > 0) {
+        document.title = state.title;
+      }
 
-    if (!!state.title && state.title.length > 0) {
-      document.title = state.title;
-    }
-
-    if (!!state && !!state.shown) {
-      this.show(state.url, state.title, false);
-    } else {
-      this.hide(false);
+      if (!!state && !!state.shown) {
+        this.show(state.url, state.title, false);
+      } else {
+        this.hide(false);
+      }
     }
   }
 }

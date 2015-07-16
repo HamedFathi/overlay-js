@@ -1,6 +1,6 @@
 {
   "name": "overlay-js",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "Basic overlay",
   "main": "gulpfile.js",
   "dependencies": {
@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yvesvanbroekhoven/overlay-js.git"
+    "url": "https://github.com/mrhenry/overlay-js.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yvesvanbroekhoven/overlay-js/issues"
+    "url": "https://github.com/mrhenry/overlay-js/issues"
   },
-  "homepage": "https://github.com/yvesvanbroekhoven/overlay-js"
+  "homepage": "https://github.com/mrhenry/overlay-js"
 }

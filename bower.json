@@ -1,8 +1,9 @@
 {
   "name": "overlay-js",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "homepage": "https://github.com/mrhenry/overlay-js",
   "authors": [
+    "Pieter Beulque <pieterbeulque@gmail.com>",
     "Steven Vandevelde <icidasset@gmail.com>",
     "Yves Van Broekhoven <yvesvanbroekhoven@gmail.com>"
   ],
