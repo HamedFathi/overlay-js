@@ -12,7 +12,7 @@ export default class Router {
 
   init () {
     this.root = {
-      url: window.location.pathname,
+      url: `${window.location.pathname}${window.location.search}${window.location.hash}`,
       title: document.title
     };
 
