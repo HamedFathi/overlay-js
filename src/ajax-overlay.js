@@ -34,7 +34,8 @@ export default class AjaxOverlay extends Overlay {
         // If the <title> tag is present in the responseText
         // use that as the title in the browser / history
         let title = /<title>(.*)<\/title>/gi.exec(xhr.responseText),
-            body = document.createElement('div');
+            body = document.createElement('div'),
+            parentEl = body.querySelector(`.${replace.parentNode.className.split(' ').join('.')}`);
 
         if (!!title && title.length >= 2) {
           title = title[1];
@@ -45,7 +46,11 @@ export default class AjaxOverlay extends Overlay {
         this.router.setRoot(root, title);
 
         body.innerHTML = xhr.responseText;
-        body.innerHTML = body.querySelector(`.${replace.parentNode.className.split(' ').join('.')}`).innerHTML;
+
+        if ( parentEl ) {
+          body.innerHTML = body.querySelector(`.${replace.parentNode.className.split(' ').join('.')}`).innerHTML;
+        }
+
         replace.parentNode.replaceChild(body, replace);
       }
 

@@ -39,7 +39,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _overlay = require('./overlay');
 
@@ -97,7 +97,8 @@ var AjaxOverlay = (function (_Overlay) {
             // If the <title> tag is present in the responseText
             // use that as the title in the browser / history
             var title = /<title>(.*)<\/title>/gi.exec(xhr.responseText),
-                body = document.createElement('div');
+                body = document.createElement('div'),
+                parentEl = body.querySelector('.' + replace.parentNode.className.split(' ').join('.'));
 
             if (!!title && title.length >= 2) {
               title = title[1];
@@ -108,7 +109,11 @@ var AjaxOverlay = (function (_Overlay) {
             _this2.router.setRoot(root, title);
 
             body.innerHTML = xhr.responseText;
-            body.innerHTML = body.querySelector('.' + replace.parentNode.className.split(' ').join('.')).innerHTML;
+
+            if (parentEl) {
+              body.innerHTML = body.querySelector('.' + replace.parentNode.className.split(' ').join('.')).innerHTML;
+            }
+
             replace.parentNode.replaceChild(body, replace);
           };
 
@@ -139,11 +144,11 @@ var AjaxOverlay = (function (_Overlay) {
 
       return this;
     }
-  }, {
-    key: 'fetch',
 
     // Fetch HTML from an URL and render it inside the overlay
     // @param {String}  url   Not supporting CORS properly, so try using relative paths altogether
+  }, {
+    key: 'fetch',
     value: function fetch(url) {
       var _this4 = this;
 
@@ -175,13 +180,13 @@ var AjaxOverlay = (function (_Overlay) {
 
       xhr.send();
     }
-  }, {
-    key: 'show',
 
     // Show overlay
     // @param {String}  url     URL to keep in the browser history
     // @param {String}  title   Title to associate with the URL in the browser history
     // @param {Bool}    push    Push to browser history?
+  }, {
+    key: 'show',
     value: function show() {
       var url = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
       var title = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
@@ -191,11 +196,11 @@ var AjaxOverlay = (function (_Overlay) {
         this.router.push(url, { title: title, shown: true });
       }
     }
-  }, {
-    key: 'hide',
 
     // Hide overlay
     // @param {Bool}    push    Push to browser history?
+  }, {
+    key: 'hide',
     value: function hide() {
       var push = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
@@ -203,11 +208,11 @@ var AjaxOverlay = (function (_Overlay) {
         this.router.pushRoot();
       }
     }
-  }, {
-    key: 'handleRoutePop',
 
     // Handle browser popstate event
     // @param {Object} state  The state object associated with the popstate event
+  }, {
+    key: 'handleRoutePop',
     value: function handleRoutePop(state) {
       if (!!state) {
         if (!!state.title && state.title.length > 0) {
@@ -284,17 +289,17 @@ var Overlay = (function () {
     this.init().bind();
   }
 
+  // Initial setup
+
   _createClass(Overlay, [{
     key: 'init',
-
-    // Initial setup
     value: function init() {
       return this;
     }
-  }, {
-    key: 'bind',
 
     // Bind event handlers to certain DOM elements, specified through
+  }, {
+    key: 'bind',
     value: function bind() {
       var _this = this;
 
@@ -321,13 +326,13 @@ var Overlay = (function () {
 
       return this;
     }
-  }, {
-    key: 'bindDelegate',
 
     // Helper method to support clicks on elements that don't exist yet
     // @param {String}    evt       Event to listen for
     // @param {String}    selector  Element selector that triggers the event
     // @param {Function}  handler   Callback method
+  }, {
+    key: 'bindDelegate',
     value: function bindDelegate(evt, selector, handler) {
       var matches = document.body.matches || document.body.webkitMatchesSelector || document.body.msMatchesSelector;
 
@@ -347,16 +352,16 @@ var Overlay = (function () {
         }
       }, false);
     }
-  }, {
-    key: 'show',
 
     // Show the overlay
+  }, {
+    key: 'show',
     value: function show() {
       if (this.el.className.indexOf(this.options.states.shown) !== -1) {
         return false;
       }
 
-      var regex = new RegExp('\\s*' + this.options.states.hidden + '\\s*', 'gi'),
+      var regex = new RegExp("\\s*" + this.options.states.hidden + "\\s*", 'gi'),
           // Template string not working because of reasons
       evt = new CustomEvent('overlay:show', { bubbles: true, cancelable: true }); // @fixme - IE9 support
 
@@ -366,16 +371,16 @@ var Overlay = (function () {
 
       return true;
     }
-  }, {
-    key: 'hide',
 
     // Hide the overlay
+  }, {
+    key: 'hide',
     value: function hide() {
       if (this.el.className.indexOf(this.options.states.hidden) !== -1) {
         return false;
       }
 
-      var regex = new RegExp('\\s*' + this.options.states.shown + '\\s*', 'gi'),
+      var regex = new RegExp("\\s*" + this.options.states.shown + "\\s*", 'gi'),
           // Template string not working because of reasons
       evt = new CustomEvent('overlay:hide', { bubbles: true, cancelable: true }); // @fixme - IE9 support
 
@@ -385,10 +390,10 @@ var Overlay = (function () {
 
       return true;
     }
-  }, {
-    key: 'toggle',
 
     // Toggle the overlay
+  }, {
+    key: 'toggle',
     value: function toggle() {
       if (this.el.className.indexOf(this.options.states.shown) === -1) {
         this.show();
@@ -396,10 +401,10 @@ var Overlay = (function () {
         this.hide();
       }
     }
-  }, {
-    key: 'render',
 
     // Render HTML inside the content selector
+  }, {
+    key: 'render',
     value: function render(html) {
       this.el.querySelector(this.options.selectors.content).innerHTML = html;
     }
@@ -440,7 +445,7 @@ var Router = (function () {
     key: 'init',
     value: function init() {
       this.root = {
-        url: window.location.pathname,
+        url: '' + window.location.pathname + window.location.search + window.location.hash,
         title: document.title
       };
 
