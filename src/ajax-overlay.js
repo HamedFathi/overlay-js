@@ -57,6 +57,15 @@ export default class AjaxOverlay extends Overlay {
       xhr.send();
     }
 
+    // Check for element with class .js-overlay__initial-content
+    // if found, render it inside this instance & open overlay
+    if ($('.js-overlay__initial-content').length) {
+      var $content = $('.js-overlay__initial-content').detach();
+
+      this.render(`${$content.html()}`);
+      this.show(window.location.href, document.title, false);
+    }
+
     return this;
   }
 
