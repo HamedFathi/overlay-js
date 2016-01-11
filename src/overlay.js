@@ -15,7 +15,7 @@ export default class Overlay {
       },
       states: {
         hidden: 'is-hidden',
-        shown: 'is-shown'
+        shown: 'is-shown',
       }
     };
 
@@ -104,6 +104,14 @@ export default class Overlay {
 
     document.body.dispatchEvent(evt);
 
+    if (document.body.classList) {
+      document.body.classList.add('overlay-' + this.options.states.shown);
+
+    } else {
+      document.body.className += ' ' + 'overlay-' + this.options.states.shown;
+
+    }
+
     return true;
   }
 
@@ -119,6 +127,16 @@ export default class Overlay {
     this.el.className = this.el.className.replace(regex, '') + ' ' + this.options.states.hidden;
 
     document.body.dispatchEvent(evt);
+
+    if (document.body.classList) {
+      document.body.classList.remove('overlay-' + this.options.states.shown);
+
+    } else {
+      document.body.className = el.className.replace(new RegExp('(^|\\b)' + 'overlay-' + this.options.states.shown.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+
+    }
+
+
 
     return true;
   }
