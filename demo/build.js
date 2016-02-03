@@ -121,6 +121,13 @@ var AjaxOverlay = (function (_Overlay) {
         })();
       }
 
+      if ($('.js-overlay__initial-content').length) {
+        var $content = $('.js-overlay__initial-content').detach();
+
+        this.render('' + $content.html());
+        this.show(window.location.href, document.title, false);
+      }
+
       return this;
     }
   }, {
